@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}Apply Leave - {{ app_name }}{% endblock %}
+{% block page_title %}Apply for Leave{% endblock %}
+{% block content %}
+
+<div class="row g-4">
+  <div class="col-lg-5">
+    <div class="card-block panel">
+      <div class="panel-title">New Leave Request</div>
+      <form method="POST" novalidate>
+        {{ form.hidden_tag() }}
+        <div class="mb-3">
+          {{ form.leave_type.label(class="form-label") }}
+          {{ form.leave_type(class="form-select") }}
+        </div>
+        <div class="row g-2 mb-3">
+          <div class="col-6">
+            {{ form.start_date.label(class="form-label") }}
+            {{ form.start_date(class="form-control") }}
+          </div>
+          <div class="col-6">
+            {{ form.end_date.label(class="form-label") }}
+            {{ form.end_date(class="form-control") }}
+          </div>
+        </div>
+        <div class="mb-3">
+          {{ form.reason.label(class="form-label") }}
+          {{ form.reason(class="form-control", rows=3) }}
+          {% for e in form.reason.errors %}<div class="text-danger small mt-1">{{ e }}</div>{% endfor %}
+        </div>
+        {{ form.submit(class="btn btn-brass w-100") }}
+      </form>
+    </div>
+  </div>
+
+  <div class="col-lg-7">
+    <div class="card-block panel">
+      <div class="panel-title">My Leave History</div>
+      {% if leaves %}
+      <table class="table-modern">
+        <thead><tr><th>Type</th><th>Dates</th><th>Status</th><th>Remark</th></tr></thead>
+        <tbody>
+          {% for l in leaves %}
+          <tr>
+            <td>{{ l.leave_type }}</td>
+            <td>{{ l.start_date.strftime('%d %b') }} – {{ l.end_date.strftime('%d %b %Y') }} ({{ l.days }}d)</td>
+            <td>
+              {% if l.status == 'Approved' %}<span class="badge-pill pill-teal">{{ l.status }}</span>
+              {% elif l.status == 'Rejected' %}<span class="badge-pill pill-danger">{{ l.status }}</span>
+              {% elif l.status == 'Manager Approved' %}<span class="badge-pill pill-warn">Awaiting HR</span>
+              {% else %}<span class="badge-pill pill-neutral">{{ l.status }}</span>{% endif %}
+            </td>
+            <td class="small text-muted">{{ l.hr_remark or l.manager_remark or '-' }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="empty-state">No leave requests yet.</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

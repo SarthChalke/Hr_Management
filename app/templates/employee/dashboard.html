@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}My Dashboard - {{ app_name }}{% endblock %}
+{% block page_title %}My Dashboard{% endblock %}
+{% block content %}
+
+<div class="row g-4">
+  <div class="col-lg-4">
+    <div class="card-block panel text-center">
+      <div class="panel-title justify-content-center">Today's Attendance</div>
+      {% if today_record %}
+        <p class="mb-1"><strong>Check-in:</strong> {{ today_record.check_in.strftime('%H:%M') if today_record.check_in else '-' }}</p>
+        <p class="mb-3"><strong>Check-out:</strong> {{ today_record.check_out.strftime('%H:%M') if today_record.check_out else 'Not yet' }}</p>
+        {% if today_record.status == 'Late' %}<span class="badge-pill pill-warn mb-3 d-inline-block">Late</span>{% else %}<span class="badge-pill pill-teal mb-3 d-inline-block">Present</span>{% endif %}
+        <br>
+        {% if not today_record.check_out %}
+        <form method="POST" action="{{ url_for('employee.check_out') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="btn btn-brass w-100">Check Out</button>
+        </form>
+        {% else %}
+        <div class="text-muted small">You've completed today's attendance.</div>
+        {% endif %}
+      {% else %}
+        <p class="text-muted small mb-3">You haven't checked in today.</p>
+        <form method="POST" action="{{ url_for('employee.check_in') }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="btn btn-navy w-100">Check In</button>
+        </form>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="col-lg-8">
+    <div class="card-block panel">
+      <div class="panel-title">
+        Recent Attendance
+        <a href="{{ url_for('employee.attendance_history') }}" class="small">View all</a>
+      </div>
+      {% if recent_attendance %}
+      <table class="table-modern">
+        <thead><tr><th>Date</th><th>Check In</th><th>Check Out</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for r in recent_attendance %}
+          <tr>
+            <td>{{ r.date.strftime('%d %b %Y') }}</td>
+            <td>{{ r.check_in.strftime('%H:%M') if r.check_in else '-' }}</td>
+            <td>{{ r.check_out.strftime('%H:%M') if r.check_out else '-' }}</td>
+            <td>
+              {% if r.status == 'Present' %}<span class="badge-pill pill-teal">{{ r.status }}</span>
+              {% elif r.status == 'Late' %}<span class="badge-pill pill-warn">{{ r.status }}</span>
+              {% else %}<span class="badge-pill pill-neutral">{{ r.status }}</span>{% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="empty-state">No attendance records yet.</div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 mt-1">
+  <div class="col-lg-6">
+    <div class="card-block panel">
+      <div class="panel-title">
+        My Leave Requests
+        <a href="{{ url_for('employee.apply_leave') }}" class="small">Apply for leave</a>
+      </div>
+      {% if recent_leaves %}
+      <table class="table-modern">
+        <thead><tr><th>Type</th><th>Dates</th><th>Status</th></tr></thead>
+        <tbody>
+          {% for l in recent_leaves %}
+          <tr>
+            <td>{{ l.leave_type }}</td>
+            <td>{{ l.start_date.strftime('%d %b') }} – {{ l.end_date.strftime('%d %b') }}</td>
+            <td>
+              {% if l.status == 'Approved' %}<span class="badge-pill pill-teal">{{ l.status }}</span>
+              {% elif l.status == 'Rejected' %}<span class="badge-pill pill-danger">{{ l.status }}</span>
+              {% elif l.status == 'Manager Approved' %}<span class="badge-pill pill-warn">Awaiting HR</span>
+              {% else %}<span class="badge-pill pill-neutral">{{ l.status }}</span>{% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <div class="empty-state">No leave requests yet.</div>
+      {% endif %}
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card-block panel">
+      <div class="panel-title"><i class="bi bi-stars"></i> AI HR Assistant</div>
+      <p class="text-muted small">Ask about leave policy, attendance rules, salary, or holidays &mdash; answered instantly, no waiting on HR.</p>
+      <a href="{{ url_for('ai.chatbot') }}" class="btn btn-outline-navy btn-sm">Open Chatbot</a>
+      {% if emp %}
+      <a href="{{ url_for('ai.performance', emp_id=emp.id) }}" class="btn btn-outline-navy btn-sm">View My Performance Score</a>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}HR Dashboard - {{ app_name }}{% endblock %}
+{% block page_title %}HR Dashboard{% endblock %}
+{% block content %}
+
+<div class="kpi-grid">
+  <div class="kpi-card" style="--accent: var(--brass);">
+    <div class="label">Total Employees</div>
+    <div class="value">{{ total_employees }}</div>
+    <div class="hint">{{ active_employees }} active</div>
+  </div>
+  <div class="kpi-card" style="--accent: var(--warn);">
+    <div class="label">Awaiting Final Approval</div>
+    <div class="value">{{ pending_final_approval }}</div>
+    <div class="hint">Leave requests needing HR sign-off</div>
+  </div>
+  <div class="kpi-card" style="--accent: var(--teal);">
+    <div class="label">Present Today</div>
+    <div class="value">{{ today_present }}</div>
+    <div class="hint">Marked present so far</div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-6">
+    <a href="{{ url_for('hr.employees') }}" class="text-decoration-none">
+      <div class="card-block panel d-flex align-items-center gap-3">
+        <i class="bi bi-people fs-3" style="color: var(--brass-dark);"></i>
+        <div>
+          <div class="fw-bold text-dark">Manage Employees</div>
+          <div class="small text-muted">Add, edit, search, and export employee records</div>
+        </div>
+      </div>
+    </a>
+  </div>
+  <div class="col-lg-6">
+    <a href="{{ url_for('hr.leaves') }}" class="text-decoration-none">
+      <div class="card-block panel d-flex align-items-center gap-3">
+        <i class="bi bi-calendar-check fs-3" style="color: var(--brass-dark);"></i>
+        <div>
+          <div class="fw-bold text-dark">Leave Approvals</div>
+          <div class="small text-muted">Give final HR approval on manager-approved requests</div>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
+
+<div class="card-block panel mt-4">
+  <div class="panel-title">Recent Leave Activity</div>
+  {% if recent_leaves %}
+  <table class="table-modern">
+    <thead><tr><th>Employee</th><th>Type</th><th>Dates</th><th>Status</th></tr></thead>
+    <tbody>
+      {% for l in recent_leaves %}
+      <tr>
+        <td>{{ l.employee.name }}</td>
+        <td>{{ l.leave_type }}</td>
+        <td>{{ l.start_date.strftime('%d %b') }} – {{ l.end_date.strftime('%d %b %Y') }}</td>
+        <td>
+          {% if l.status == 'Approved' %}<span class="badge-pill pill-teal">{{ l.status }}</span>
+          {% elif l.status == 'Rejected' %}<span class="badge-pill pill-danger">{{ l.status }}</span>
+          {% else %}<span class="badge-pill pill-warn">{{ l.status }}</span>{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty-state">No leave activity yet.</div>
+  {% endif %}
+</div>
+{% endblock %}

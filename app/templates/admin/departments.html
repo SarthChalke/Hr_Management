@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Departments - {{ app_name }}{% endblock %}
+{% block page_title %}Departments{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-end mb-3">
+  <a href="{{ url_for('admin.new_department') }}" class="btn btn-brass btn-sm"><i class="bi bi-plus-lg"></i> New Department</a>
+</div>
+
+<div class="row g-4">
+  {% for d in departments %}
+  <div class="col-md-6 col-lg-4">
+    <div class="card-block panel h-100">
+      <div class="d-flex justify-content-between align-items-start">
+        <div>
+          <div class="fw-bold text-dark fs-5">{{ d.name }}</div>
+          <div class="text-muted small">{{ d.employee_count }} employee(s)</div>
+        </div>
+        <span class="badge-pill pill-brass">₹{{ '{:,.0f}'.format(d.budget or 0) }}</span>
+      </div>
+      <p class="small text-muted mt-2 mb-2">{{ d.description or 'No description provided.' }}</p>
+      <div class="small mb-3">
+        <i class="bi bi-person-badge"></i> Head: {{ d.head.name if d.head else 'Unassigned' }}
+      </div>
+      <div class="d-flex gap-2">
+        <a href="{{ url_for('admin.edit_department', dept_id=d.id) }}" class="btn btn-sm btn-outline-navy">Edit</a>
+        <form method="POST" action="{{ url_for('admin.delete_department', dept_id=d.id) }}" onsubmit="return confirm('Delete this department?');">
+          <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="col-12"><div class="empty-state">No departments yet. Create one to get started.</div></div>
+  {% endfor %}
+</div>
+{% endblock %}

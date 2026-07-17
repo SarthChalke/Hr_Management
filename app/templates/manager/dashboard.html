@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Manager Dashboard - {{ app_name }}{% endblock %}
+{% block page_title %}Team Dashboard{% endblock %}
+{% block content %}
+
+{% if not dept %}
+<div class="empty-state">
+  You're not currently assigned as head of a department. Ask your Super Admin to set you as a Department Head.
+</div>
+{% else %}
+<div class="kpi-grid">
+  <div class="kpi-card" style="--accent: var(--brass);">
+    <div class="label">Department</div>
+    <div class="value" style="font-size: 1.3rem;">{{ dept.name }}</div>
+    <div class="hint">{{ team_count }} team member(s)</div>
+  </div>
+  <div class="kpi-card" style="--accent: var(--warn);">
+    <div class="label">Pending Leave Requests</div>
+    <div class="value">{{ pending_leaves }}</div>
+    <div class="hint">Awaiting your decision</div>
+  </div>
+  <div class="kpi-card" style="--accent: var(--teal);">
+    <div class="label">Present Today</div>
+    <div class="value">{{ today_present }}</div>
+    <div class="hint">of {{ team_count }} team members</div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-md-6">
+    <a href="{{ url_for('manager.team_attendance') }}" class="text-decoration-none">
+      <div class="card-block panel d-flex align-items-center gap-3">
+        <i class="bi bi-clipboard-data fs-3" style="color: var(--brass-dark);"></i>
+        <div>
+          <div class="fw-bold text-dark">Team Attendance</div>
+          <div class="small text-muted">See who's in today</div>
+        </div>
+      </div>
+    </a>
+  </div>
+  <div class="col-md-6">
+    <a href="{{ url_for('manager.leaves') }}" class="text-decoration-none">
+      <div class="card-block panel d-flex align-items-center gap-3">
+        <i class="bi bi-calendar-check fs-3" style="color: var(--brass-dark);"></i>
+        <div>
+          <div class="fw-bold text-dark">Leave Requests</div>
+          <div class="small text-muted">First-stage approval for your team</div>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

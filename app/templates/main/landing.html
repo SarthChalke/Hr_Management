@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}{{ app_name }}{% endblock %}
+{% block guest_content %}
+<div class="landing-hero">
+  <div class="section-eyebrow" style="color: var(--brass);">Diploma Final Year Project · MSBTE</div>
+  <h1>One portal to run attendance, leave, departments and people &mdash; with AI-assisted insight built in.</h1>
+  <p>Role-based dashboards for Super Admins, HR Managers, Department Managers and Employees. Built with Flask, PostgreSQL, and a rule-based AI assistant that works fully offline.</p>
+  <a href="{{ url_for('auth.login') }}" class="btn btn-brass btn-lg px-4">Log In to the Portal</a>
+</div>
+
+<div class="landing-features">
+  <div class="row g-4">
+    <div class="col-md-4">
+      <div class="feature-card">
+        <i class="bi bi-people fs-3" style="color: var(--brass-dark);"></i>
+        <h3 class="h5 mt-2">Employee &amp; Department Management</h3>
+        <p class="text-muted small mb-0">Full CRUD for employees and departments, search, filters, and CSV export for reporting.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="feature-card">
+        <i class="bi bi-clock-history fs-3" style="color: var(--brass-dark);"></i>
+        <h3 class="h5 mt-2">Attendance &amp; Leave Workflow</h3>
+        <p class="text-muted small mb-0">Daily check-in/out, late detection, and a two-stage leave approval: manager, then HR.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="feature-card">
+        <i class="bi bi-stars fs-3" style="color: var(--brass-dark);"></i>
+        <h3 class="h5 mt-2">AI HR Assistant</h3>
+        <p class="text-muted small mb-0">A rule-based chatbot and performance analyzer &mdash; fully explainable, no external API key required.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Leave Requests - {{ app_name }}{% endblock %}
+{% block page_title %}Team Leave Requests{% endblock %}
+{% block content %}
+
+<div class="card-block panel">
+  {% if leaves %}
+  <table class="table-modern">
+    <thead><tr><th>Employee</th><th>Type</th><th>Dates</th><th>Reason</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+      {% for l in leaves %}
+      <tr>
+        <td>{{ l.employee.name }}</td>
+        <td>{{ l.leave_type }}</td>
+        <td>{{ l.start_date.strftime('%d %b') }} – {{ l.end_date.strftime('%d %b %Y') }} ({{ l.days }}d)</td>
+        <td class="text-muted small">{{ l.reason }}</td>
+        <td>
+          {% if l.status == 'Approved' %}<span class="badge-pill pill-teal">{{ l.status }}</span>
+          {% elif l.status == 'Rejected' %}<span class="badge-pill pill-danger">{{ l.status }}</span>
+          {% elif l.status == 'Manager Approved' %}<span class="badge-pill pill-warn">Awaiting HR</span>
+          {% else %}<span class="badge-pill pill-neutral">{{ l.status }}</span>{% endif %}
+        </td>
+        <td class="text-end">
+          {% if l.status == 'Pending' %}
+          <form method="POST" action="{{ url_for('manager.decide_leave', leave_id=l.id) }}" class="d-flex gap-1 justify-content-end">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button name="submit_approve" value="1" class="btn btn-sm btn-outline-navy">Approve</button>
+            <button name="submit_reject" value="1" class="btn btn-sm btn-outline-danger">Reject</button>
+          </form>
+          {% else %}
+          <span class="text-muted small">—</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty-state">No leave requests from your team yet.</div>
+  {% endif %}
+</div>
+{% endblock %}

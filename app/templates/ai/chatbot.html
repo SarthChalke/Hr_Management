@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}HR Chatbot - {{ app_name }}{% endblock %}
+{% block page_title %}AI HR Assistant{% endblock %}
+{% block content %}
+
+<div class="row justify-content-center">
+  <div class="col-lg-7">
+    <div class="card-block panel">
+      <div class="panel-title">
+        <span><i class="bi bi-stars"></i> Ask the HR Assistant</span>
+        <span class="badge-pill pill-neutral">Rule-based · Offline</span>
+      </div>
+      <p class="text-muted small">Try: "What is the leave policy?", "How do I apply for leave?", "What counts as late?"</p>
+
+      <div id="chat-log" class="d-flex flex-column gap-2 mb-3" style="max-height: 360px; overflow-y: auto;">
+        {% if question %}
+        <div class="chat-bubble user">{{ question }}</div>
+        <div class="chat-bubble bot">{{ answer }}</div>
+        {% else %}
+        <div class="chat-bubble bot">Hi {{ current_user.name.split(' ')[0] }}! Ask me about leave policy, attendance, salary, or holidays.</div>
+        {% endif %}
+      </div>
+
+      <form method="POST" id="chat-form" class="d-flex gap-2">
+        {{ form.hidden_tag() }}
+        {{ form.message(class="form-control", placeholder="Type your question...", autocomplete="off") }}
+        {{ form.submit(class="btn btn-brass") }}
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

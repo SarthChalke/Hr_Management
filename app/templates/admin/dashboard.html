@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard - {{ app_name }}{% endblock %}
+{% block page_title %}Organization Dashboard{% endblock %}
+{% block content %}
+
+<div class="kpi-grid">
+  <div class="kpi-card" style="--accent: var(--brass);">
+    <div class="label">Total Employees</div>
+    <div class="value">{{ total_employees }}</div>
+    <div class="hint">{{ active_employees }} active</div>
+  </div>
+  <div class="kpi-card" style="--accent: var(--teal);">
+    <div class="label">Departments</div>
+    <div class="value">{{ total_departments }}</div>
+    <div class="hint">Across the organization</div>
+  </div>
+  <div class="kpi-card" style="--accent: var(--warn);">
+    <div class="label">Pending Leave Requests</div>
+    <div class="value">{{ pending_leaves }}</div>
+    <div class="hint">Awaiting manager/HR action</div>
+  </div>
+  <div class="kpi-card" style="--accent: var(--navy-700);">
+    <div class="label">Today's Attendance Rate</div>
+    <div class="value">{{ attendance_rate }}%</div>
+    <div class="hint">Present vs marked today</div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-7">
+    <div class="card-block panel">
+      <div class="panel-title">Employees per Department</div>
+      <canvas id="deptChart" height="220"></canvas>
+    </div>
+  </div>
+  <div class="col-lg-5">
+    <div class="card-block panel">
+      <div class="panel-title">Users by Role</div>
+      <canvas id="roleChart" height="220"></canvas>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4 mt-1">
+  <div class="col-md-6">
+    <a href="{{ url_for('admin.users') }}" class="text-decoration-none">
+      <div class="card-block panel d-flex align-items-center gap-3">
+        <i class="bi bi-people fs-3" style="color: var(--brass-dark);"></i>
+        <div>
+          <div class="fw-bold text-dark">Manage Users</div>
+          <div class="small text-muted">Create accounts and assign roles</div>
+        </div>
+      </div>
+    </a>
+  </div>
+  <div class="col-md-6">
+    <a href="{{ url_for('admin.departments') }}" class="text-decoration-none">
+      <div class="card-block panel d-flex align-items-center gap-3">
+        <i class="bi bi-diagram-3 fs-3" style="color: var(--brass-dark);"></i>
+        <div>
+          <div class="fw-bold text-dark">Manage Departments</div>
+          <div class="small text-muted">Set heads, budgets, and structure</div>
+        </div>
+      </div>
+    </a>
+  </div>
+</div>
+
+{% endblock %}
+{% block extra_scripts %}
+<script>
+  new Chart(document.getElementById('deptChart'), {
+    type: 'bar',
+    data: {
+      labels: {{ dept_data | map(attribute='name') | list | tojson }},
+      datasets: [{
+        label: 'Employees',
+        data: {{ dept_data | map(attribute='count') | list | tojson }},
+        backgroundColor: '#7C3AED',
+        borderRadius: 8,
+      }]
+    },
+    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+  });
+
+  new Chart(document.getElementById('roleChart'), {
+    type: 'doughnut',
+    data: {
+      labels: {{ role_counts.keys() | list | tojson }},
+      datasets: [{
+        data: {{ role_counts.values() | list | tojson }},
+        backgroundColor: ['#4C1D95', '#EC4899', '#14B8A6', '#FB923C'],
+      }]
+    },
+    options: { plugins: { legend: { position: 'bottom' } } }
+  });
+</script>
+{% endblock %}

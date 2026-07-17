@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}My Attendance - {{ app_name }}{% endblock %}
+{% block page_title %}My Attendance History{% endblock %}
+{% block content %}
+
+<div class="card-block panel">
+  {% if records %}
+  <table class="table-modern">
+    <thead><tr><th>Date</th><th>Check In</th><th>Check Out</th><th>Hours</th><th>Status</th></tr></thead>
+    <tbody>
+      {% for r in records %}
+      <tr>
+        <td>{{ r.date.strftime('%d %b %Y') }}</td>
+        <td>{{ r.check_in.strftime('%H:%M') if r.check_in else '-' }}</td>
+        <td>{{ r.check_out.strftime('%H:%M') if r.check_out else '-' }}</td>
+        <td>{{ r.work_hours or '-' }}</td>
+        <td>
+          {% if r.status == 'Present' %}<span class="badge-pill pill-teal">{{ r.status }}</span>
+          {% elif r.status == 'Late' %}<span class="badge-pill pill-warn">{{ r.status }}</span>
+          {% elif r.status == 'Absent' %}<span class="badge-pill pill-danger">{{ r.status }}</span>
+          {% else %}<span class="badge-pill pill-neutral">{{ r.status }}</span>{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty-state">No attendance records yet. Check in from your dashboard to get started.</div>
+  {% endif %}
+</div>
+{% endblock %}

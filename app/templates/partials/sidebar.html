@@ -1,0 +1,57 @@
+<div class="sidebar">
+  <div class="sidebar-brand">
+    <div class="mark">HR</div>
+    <div>
+      <div class="name">{{ app_name.split('&')[0] if '&' in app_name else app_name }}</div>
+      <div class="sub">AI-assisted HR Suite</div>
+    </div>
+  </div>
+  <div class="sidebar-role">{{ current_user.role_label }}</div>
+
+  <nav class="sidebar-nav">
+    {% if current_user.role == 'super_admin' %}
+      <a href="{{ url_for('admin.dashboard') }}" class="{{ 'active' if request.endpoint == 'admin.dashboard' }}"><span class="icon"><i class="bi bi-speedometer2"></i></span> Dashboard</a>
+      <div class="section-label">Organization</div>
+      <a href="{{ url_for('admin.users') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('admin.') and 'user' in request.endpoint }}"><span class="icon"><i class="bi bi-people"></i></span> Users</a>
+      <a href="{{ url_for('admin.departments') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('admin.') and 'department' in request.endpoint }}"><span class="icon"><i class="bi bi-diagram-3"></i></span> Departments</a>
+      <div class="section-label">Assistant</div>
+      <a href="{{ url_for('ai.chatbot') }}" class="{{ 'active' if request.endpoint == 'ai.chatbot' }}"><span class="icon"><i class="bi bi-stars"></i></span> HR Chatbot</a>
+
+    {% elif current_user.role == 'hr_manager' %}
+      <a href="{{ url_for('hr.dashboard') }}" class="{{ 'active' if request.endpoint == 'hr.dashboard' }}"><span class="icon"><i class="bi bi-speedometer2"></i></span> Dashboard</a>
+      <div class="section-label">People</div>
+      <a href="{{ url_for('hr.employees') }}" class="{{ 'active' if request.endpoint and 'employee' in request.endpoint and request.endpoint.startswith('hr.') }}"><span class="icon"><i class="bi bi-people"></i></span> Employees</a>
+      <a href="{{ url_for('hr.leaves') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('hr.leave') or request.endpoint == 'hr.decide_leave' }}"><span class="icon"><i class="bi bi-calendar-check"></i></span> Leave Approvals</a>
+      <a href="{{ url_for('hr.attendance_report') }}" class="{{ 'active' if request.endpoint == 'hr.attendance_report' }}"><span class="icon"><i class="bi bi-clipboard-data"></i></span> Attendance Report</a>
+      <div class="section-label">Assistant</div>
+      <a href="{{ url_for('ai.chatbot') }}" class="{{ 'active' if request.endpoint == 'ai.chatbot' }}"><span class="icon"><i class="bi bi-stars"></i></span> HR Chatbot</a>
+
+    {% elif current_user.role == 'dept_manager' %}
+      <a href="{{ url_for('manager.dashboard') }}" class="{{ 'active' if request.endpoint == 'manager.dashboard' }}"><span class="icon"><i class="bi bi-speedometer2"></i></span> Dashboard</a>
+      <div class="section-label">My Team</div>
+      <a href="{{ url_for('manager.team_attendance') }}" class="{{ 'active' if request.endpoint == 'manager.team_attendance' }}"><span class="icon"><i class="bi bi-clipboard-data"></i></span> Team Attendance</a>
+      <a href="{{ url_for('manager.leaves') }}" class="{{ 'active' if request.endpoint and request.endpoint.startswith('manager.leave') or request.endpoint == 'manager.decide_leave' }}"><span class="icon"><i class="bi bi-calendar-check"></i></span> Leave Requests</a>
+      <div class="section-label">Assistant</div>
+      <a href="{{ url_for('ai.chatbot') }}" class="{{ 'active' if request.endpoint == 'ai.chatbot' }}"><span class="icon"><i class="bi bi-stars"></i></span> HR Chatbot</a>
+
+    {% elif current_user.role == 'employee' %}
+      <a href="{{ url_for('employee.dashboard') }}" class="{{ 'active' if request.endpoint == 'employee.dashboard' }}"><span class="icon"><i class="bi bi-speedometer2"></i></span> Dashboard</a>
+      <div class="section-label">My Work</div>
+      <a href="{{ url_for('employee.attendance_history') }}" class="{{ 'active' if request.endpoint == 'employee.attendance_history' }}"><span class="icon"><i class="bi bi-clock-history"></i></span> Attendance</a>
+      <a href="{{ url_for('employee.apply_leave') }}" class="{{ 'active' if request.endpoint == 'employee.apply_leave' }}"><span class="icon"><i class="bi bi-calendar-plus"></i></span> Apply Leave</a>
+      <a href="{{ url_for('employee.profile') }}" class="{{ 'active' if request.endpoint == 'employee.profile' }}"><span class="icon"><i class="bi bi-person-badge"></i></span> My Profile</a>
+      {% if current_user.employee %}
+      <a href="{{ url_for('ai.performance', emp_id=current_user.employee.id) }}" class="{{ 'active' if request.endpoint == 'ai.performance' }}"><span class="icon"><i class="bi bi-graph-up-arrow"></i></span> My Performance (AI)</a>
+      {% endif %}
+      <div class="section-label">Assistant</div>
+      <a href="{{ url_for('ai.chatbot') }}" class="{{ 'active' if request.endpoint == 'ai.chatbot' }}"><span class="icon"><i class="bi bi-stars"></i></span> HR Chatbot</a>
+    {% endif %}
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="user-name">{{ current_user.name }}</div>
+    <div class="user-email">{{ current_user.email }}</div>
+    <a href="{{ url_for('auth.change_password') }}"><i class="bi bi-key"></i> Change Password</a><br>
+    <a href="{{ url_for('auth.logout') }}"><i class="bi bi-box-arrow-right"></i> Log Out</a>
+  </div>
+</div>

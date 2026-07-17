@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Attendance Report - {{ app_name }}{% endblock %}
+{% block page_title %}Attendance Report{% endblock %}
+{% block content %}
+
+<form class="d-flex gap-2 mb-3" method="GET">
+  <input type="date" name="date" class="form-control form-control-sm" style="width: 180px;" value="{{ selected_date.isoformat() }}">
+  <button class="btn btn-sm btn-outline-navy" type="submit">View</button>
+</form>
+
+<div class="card-block panel">
+  <div class="panel-title">Attendance for {{ selected_date.strftime('%d %B %Y') }}</div>
+  {% if records %}
+  <table class="table-modern">
+    <thead><tr><th>Employee</th><th>Department</th><th>Check In</th><th>Check Out</th><th>Hours</th><th>Status</th></tr></thead>
+    <tbody>
+      {% for r in records %}
+      <tr>
+        <td>{{ r.employee.name }}</td>
+        <td>{{ r.employee.department.name if r.employee.department else '-' }}</td>
+        <td>{{ r.check_in.strftime('%H:%M') if r.check_in else '-' }}</td>
+        <td>{{ r.check_out.strftime('%H:%M') if r.check_out else '-' }}</td>
+        <td>{{ r.work_hours or '-' }}</td>
+        <td>
+          {% if r.status == 'Present' %}<span class="badge-pill pill-teal">{{ r.status }}</span>
+          {% elif r.status == 'Late' %}<span class="badge-pill pill-warn">{{ r.status }}</span>
+          {% elif r.status == 'Absent' %}<span class="badge-pill pill-danger">{{ r.status }}</span>
+          {% else %}<span class="badge-pill pill-neutral">{{ r.status }}</span>{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty-state">No attendance marked for this date.</div>
+  {% endif %}
+</div>
+{% endblock %}

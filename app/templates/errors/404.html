@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Error 404 - {{ app_name }}{% endblock %}
+{% macro body() %}
+<div class="auth-wrap" style="min-height: 70vh;">
+  <div class="auth-card text-center">
+    <div class="auth-mark mx-auto">!</div>
+    <h2>Error 404</h2>
+    <p class="text-muted">The page you're looking for doesn't exist.</p>
+    <a href="/" class="btn btn-navy">Go Home</a>
+  </div>
+</div>
+{% endmacro %}
+{% block content %}{{ body() }}{% endblock %}
+{% block guest_content %}{{ body() }}{% endblock %}

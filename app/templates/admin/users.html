@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}Users - {{ app_name }}{% endblock %}
+{% block page_title %}Users{% endblock %}
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <form class="d-flex gap-2" method="GET">
+    <input type="text" name="q" class="form-control form-control-sm" placeholder="Search name or email" value="{{ q }}" style="width: 240px;">
+    <button class="btn btn-sm btn-outline-navy" type="submit">Search</button>
+  </form>
+  <a href="{{ url_for('admin.new_user') }}" class="btn btn-brass btn-sm"><i class="bi bi-plus-lg"></i> New User</a>
+</div>
+
+<div class="card-block panel">
+  {% if users %}
+  <table class="table-modern">
+    <thead>
+      <tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Joined</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td class="fw-semibold">{{ u.name }}</td>
+        <td>{{ u.email }}</td>
+        <td><span class="badge-pill pill-neutral">{{ u.role_label }}</span></td>
+        <td>
+          {% if u.is_active %}<span class="badge-pill pill-teal">Active</span>
+          {% else %}<span class="badge-pill pill-danger">Inactive</span>{% endif %}
+        </td>
+        <td>{{ u.created_at.strftime('%d %b %Y') if u.created_at else '-' }}</td>
+        <td class="text-end">
+          <a href="{{ url_for('admin.edit_user', user_id=u.id) }}" class="btn btn-sm btn-outline-navy"><i class="bi bi-pencil"></i></a>
+          {% if u.id != current_user.id %}
+          <form method="POST" action="{{ url_for('admin.toggle_active', user_id=u.id) }}" class="d-inline">
+            <button class="btn btn-sm btn-outline-secondary" type="submit"><i class="bi bi-power"></i></button>
+          </form>
+          <form method="POST" action="{{ url_for('admin.delete_user', user_id=u.id) }}" class="d-inline" onsubmit="return confirm('Delete this user permanently?');">
+            <button class="btn btn-sm btn-outline-danger" type="submit"><i class="bi bi-trash"></i></button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty-state">No users found.</div>
+  {% endif %}
+</div>
+{% endblock %}
