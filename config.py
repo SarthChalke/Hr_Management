@@ -23,7 +23,7 @@ class Config:
     APP_NAME = os.environ.get("APP_NAME", "AI HR & Employee Management Portal")
 
     RAW_DATABASE_URL = os.environ.get(
-        "DATABASE_URL", "postgresql://postgres:1234@localhost:5432/hr_portal"
+        "DATABASE_URL", "postgresql://hr_portal_4fn3_user:cpkbCEcilKN1kucH7iuOboBUq2CVNJJn@dpg-d9dgp7bbc2fs73e023c0-a.singapore-postgres.render.com/hr_portal_4fn3"
     )
     SQLALCHEMY_DATABASE_URI = _normalize_db_url(RAW_DATABASE_URL)
     SQLALCHEMY_TRACK_MODIFICATIONS = False
