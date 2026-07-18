@@ -1,13 +1,4 @@
-"""
-Creates all database tables and seeds demo data:
-  - 1 Super Admin, 1 HR Manager, 2 Department Managers, 6 Employees
-  - 2 Departments (Engineering, Human Resources)
-  - ~15 days of attendance history per employee
-  - A few sample leave requests in different workflow states
 
-Run with:
-    python seed.py
-"""
 import random
 from datetime import date, timedelta, time
 
