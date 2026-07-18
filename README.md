@@ -91,15 +91,7 @@ python run.py
 
 ---
 
-## Demo Accounts
 
-| Role | Email | Password |
-|---|---|---|
-| Super Admin | admin@hrportal.com | Admin@123 |
-| HR Manager | hr@hrportal.com | Hr@12345 |
-| Dept Manager (Engineering) | manager@hrportal.com | Manager@123 |
-| Dept Manager (HR) | hrhead@hrportal.com | Manager@123 |
-| Employee | employee@hrportal.com | Employee@123 |
 
 Five more employees are seeded with the password `Employee@123` (see
 `seed.py` for the full list/emails).
